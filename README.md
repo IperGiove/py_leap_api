@@ -18,13 +18,14 @@ from tryleap import TryLeap
 
 # Create a TryLeap object with your API key
 api_key = "your-api-key"
-await leap = TryLeap(api=api_key)
+leap = TryLeap(api=api_key)
 
 # Create a model
 model = await leap.create_model("My Model")
+print(model)
 
 # Overwrite the TryLeap object with the new model id
-await leap = TryLeap(api=api_key, model=model)
+await leap = TryLeap(api=api_key, model=model["id"])
 
 # Upload some images
 urls = [
@@ -35,7 +36,8 @@ urls = [
 await leap.upload_images_url(urls)
 
 # Train the model
-await leap.training_model()
+queue = await leap.training_model()
+print(queue)
 ```
 
 Ideally if you have a webhook url you can provide it to training_model in order to know when the training finished.
@@ -44,7 +46,7 @@ Otherwise you can fetch the status that return from the function.
 ```python
 # Generate some images
 prompt = "a cat sitting on a couch"
-images = await leap.generate_image(prompt, number_images=3)
+response = await leap.generate_image(prompt, number_images=3)
 
 # Retrieve the output images
 output_images = await leap.output_images()

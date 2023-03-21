@@ -95,3 +95,12 @@ class TryLeap:
         )
         return response.json()
         
+    async def output_image(self, image_id:str) -> dict:
+        response =  await send_and_parse(
+            method="GET",
+            url=cfg.endpoint.output_images,
+            headers=cfg.headers,
+            params={"inferenceId": image_id}
+        )
+        return response.json()
+        
