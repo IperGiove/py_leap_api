@@ -24,8 +24,8 @@ leap = TryLeap(api=api_key)
 model = await leap.create_model("My Model")
 print(model)
 
-# Overwrite the TryLeap object with the new model id
-await leap = TryLeap(api=api_key, model=model["id"])
+# add the model id
+leap.set_model(model=model["id"])
 
 # Upload some images
 urls = [
