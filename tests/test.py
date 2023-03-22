@@ -6,12 +6,12 @@ PROJECT_DIR = str(
 )
 sys.path.append(PROJECT_DIR)
 
-from src.py_leap_api.leap import TryLeap
+from py_leap_api.leap import TryLeap
 import asyncio
 
 
 async def main():
-    leap = TryLeap("API")
+    leap = TryLeap("1be670a8-f8b6-4942-a7ee-bf4a96be6db7")
 
     model = await leap.create_model(title="test")
     print(model)
