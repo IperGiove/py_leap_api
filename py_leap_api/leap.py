@@ -1,10 +1,49 @@
-from utils import send_and_parse
+from .utils import send_and_parse
+import warnings
+
 
 class TryLeap:
+
     
     def __init__(self, api: str, model: str=None) -> None:
         self.api = api
         self.model = model
+        # create endpoints
+        self.__endpoint_creator()
+        
+    def __endpoint_creator(self) -> None:
+        version = "v1"
+        host = f"https://api.tryleap.ai/api/{version}/images/models"
+        
+        self.headers = {
+            "accept": "application/json",
+            "content-type": "application/json",
+            "authorization": f"Bearer {self.api}"
+        }
+        
+        if self.model:
+            self.endpoint = {
+                "create_model": f"{host}",
+                "upload_images_url": f"{host}/{self.model}/samples/url",
+                "upload_images": f"{host}/{self.model}/samples",
+                "training": f"{host}/{self.model}/queue",
+                "generate_image": f"{host}/{self.model}/inferences",
+                "output_image": f"{host}/{self.model}/inferences" + "{inference_id}",
+                "output_images": f"{host}/{self.model}/inferences",  
+            }
+            
+        else:
+            self.endpoint = {
+                "create_model": f"{host}"
+            }
+            warnings.warn("Warning use method set_model to set the model id.", UserWarning)
+            
+        
+    def set_model(self, model:str) -> None:
+        self.model = model
+        # recreate endpoints whit model id 
+        self.__endpoint_creator()
+        
     
     async def create_model(self, title:str, subject:str="@me", identifier:str=None) -> dict:
         payload = {
@@ -15,8 +54,8 @@ class TryLeap:
         
         response = await send_and_parse(
             method="POST",
-            url=cfg.endpoint.create_model,
-            headers=cfg.headers,
+            url=self.endpoint["create_model"],
+            headers=self.headers,
             json=payload
         )
         
@@ -28,8 +67,8 @@ class TryLeap:
     
         response = await send_and_parse(
             method="POST",
-            url=cfg.endpoint.upload_images,
-            headers=cfg.headers,
+            url=self.endpoint["upload_images"],
+            headers=self.headers,
             params=params,
             json=payload
         )
@@ -44,8 +83,8 @@ class TryLeap:
     
         response = await send_and_parse(
             method="POST",
-            url=cfg.endpoint.upload_images,
-            headers=cfg.headers,
+            url=self.endpoint["upload_images"],
+            headers=self.headers,
             params=params,
             files=files
         )
@@ -54,8 +93,8 @@ class TryLeap:
     async def training_model(self) -> dict:
         response = await send_and_parse(
             method="POST",
-            url=cfg.endpoint.training,
-            headers=cfg.headers,
+            url=self.endpoint["training"],
+            headers=self.headers,
         )
         return response.json()
         
@@ -80,8 +119,8 @@ class TryLeap:
         
         response = await send_and_parse(
             method="POST",
-            url=cfg.endpoint.generate_image,
-            headers=cfg.headers,
+            url=self.endpoint["generate_image"],
+            headers=self.headers,
             json=payload
         )
         return response.json()
@@ -89,18 +128,17 @@ class TryLeap:
     async def output_images(self, only_finished:bool=True) -> dict:
         response =  await send_and_parse(
             method="GET",
-            url=cfg.endpoint.output_images,
-            headers=cfg.headers,
+            url=self.endpoint["output_images"],
+            headers=self.headers,
             params={"onlyFinished": only_finished}
         )
         return response.json()
         
-    async def output_image(self, image_id:str) -> dict:
+    async def output_image(self, inference_id:str) -> dict:
         response =  await send_and_parse(
             method="GET",
-            url=cfg.endpoint.output_images,
-            headers=cfg.headers,
-            params={"inferenceId": image_id}
+            url=self.endpoint["output_image"].format(inference_id=inference_id),
+            headers=self.headers,
         )
         return response.json()
         
