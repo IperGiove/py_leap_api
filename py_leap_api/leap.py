@@ -3,7 +3,6 @@ import warnings
 
 
 class TryLeap:
-
     
     def __init__(self, api: str, model: str=None) -> None:
         self.api = api
@@ -63,15 +62,20 @@ class TryLeap:
         
     async def upload_images_url(self, images:list, return_object:bool=True) -> dict:
         params = {"returnInObject": return_object}
-        payload = {"images": images}
-    
+
+        if len(images)>20:
+            warnings.warn("Warning the API endpoint accepts max 20 images.", UserWarning)
+
+        payload = {"images": images[:20]}
+
         response = await send_and_parse(
             method="POST",
-            url=self.endpoint["upload_images"],
+            url=self.endpoint["upload_images_url"],
             headers=self.headers,
             params=params,
             json=payload
         )
+
         return response.json()
         
     async def upload_images(self, images:list, return_object:bool=True) -> dict:

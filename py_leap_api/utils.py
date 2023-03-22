@@ -1,7 +1,4 @@
-import asyncio
-from typing import Any, Awaitable
 import httpx
-
 
 async def send_and_parse(
     method:str, url: str, headers:dict, params:dict=None, json:dict=None,
@@ -14,11 +11,9 @@ async def send_and_parse(
             headers=headers,
             params=params,
             json=json,
+            files=files,
+            timeout=120
         )
     if r.status_code in range(200,299):
         return r
     raise Exception(f"TryLeap response error: {r.text}")
-
-
-async def run_parallel(*functions: Awaitable[Any]) -> None:
-    return await asyncio.gather(*functions)
