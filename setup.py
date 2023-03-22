@@ -16,7 +16,7 @@ with open("README.md", "r") as fh:
 with codecs.open(
         os.path.join(
             os.path.abspath(os.path.dirname(__file__)),
-            'src/py_leap_api',
+            'py_leap_api',
             '__init__.py'
         ), 'r', 'latin1') as fp:
     try:

@@ -14,7 +14,7 @@ First, you'll need to create an account on the TryLeap website and obtain an API
 Once you have an API key, you can use the TryLeap class to interact with the service. Here's a simple example that creates a model, uploads some images, and generates some images based on a prompt:
 
 ```python
-from tryleap import TryLeap
+from py_leap_api.leap import TryLeap
 
 # Create a TryLeap object with your API key
 api_key = "your-api-key"
