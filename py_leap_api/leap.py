@@ -27,7 +27,7 @@ class TryLeap:
                 "upload_images": f"{host}/{self.model}/samples",
                 "training": f"{host}/{self.model}/queue",
                 "generate_image": f"{host}/{self.model}/inferences",
-                "output_image": f"{host}/{self.model}/inferences" + "{inference_id}",
+                "output_image": f"{host}/{self.model}/inferences/" + "{inference_id}",
                 "output_images": f"{host}/{self.model}/inferences",  
             }
             
